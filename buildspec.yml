@@ -4,7 +4,7 @@ phases:
   install:
     runtime-versions:
       java: corretto8
-     commands:
+    commands:
         - apt-get update -y
         - apt-get install -y maven
   pre_build:
