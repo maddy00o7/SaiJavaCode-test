@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM centos:latest
 FROM openjdk:11.0.13
 
 
