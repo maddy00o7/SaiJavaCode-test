@@ -21,7 +21,7 @@ phases:
       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 569428056424.dkr.ecr.ap-south-1.amazonaws.com
       - docker push ${REPOSITORY_URI}:latest
       - echo image pushed.
-      - printf '[{"name":"sample-container","imageUri":"569428056424.dkr.ecr.ap-south-1.amazonaws.com/sans:latest"}]' > imagedefinitions.json
+      - printf '[{"name":"container","imageUri":"569428056424.dkr.ecr.ap-south-1.amazonaws.com/sans:latest"}]' > imagedefinitions.json
  
 
 artifacts:
