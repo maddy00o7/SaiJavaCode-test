@@ -5,7 +5,6 @@ phases:
     runtime-versions:
       java: corretto11
     commands:
-      # Skip yum update as it may not be available in some CodeBuild environments
       - echo "Skipping yum update..."
 
   pre_build:
@@ -21,5 +20,5 @@ phases:
     commands:
       - echo "Build completed"
       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
-      - chmod 400 private_key.pem  # Ensure correct permissions on the private key file
+      - chmod 600 private_key.pem
       - scp -o StrictHostKeyChecking=no -i private_key.pem target/webapp.war ubuntu@44.204.28.186:/home/ubuntu/webapp.war
