@@ -9,6 +9,8 @@ phases:
 
   pre_build:
     commands:
+      - echo "Entering the project directory"
+      - cd server  # Change to the correct directory where your pom.xml is located
       - echo "Nothing to do in the pre_build phase..."
 
   build:
@@ -17,7 +19,6 @@ phases:
       - mvn clean package
       - pwd  # Print the working directory
       - ls -la  # List all files in the current directory
-      - ls -la /codebuild/output/*/src/target  # List contents of the expected target directory
 
   post_build:
     commands:
