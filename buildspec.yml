@@ -21,4 +21,5 @@ phases:
       - echo "Build completed"
       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
       - chmod 600 private_key.pem
+      - ls -la target
       - scp -o StrictHostKeyChecking=no -i private_key.pem target/webapp.war ubuntu@44.204.28.186:/home/ubuntu/webapp.war
