@@ -1,23 +1,12 @@
 version: 0.2
- 
+
 phases:
   install:
     runtime-versions:
       java: corretto11
     commands:
-      - echo "Installing Java version 11 ..."
-      - export JAVA_HOME="$JAVA_11_HOME"
-      - export JRE_HOME="$JRE_11_HOME"
-      - export JDK_HOME="$JDK_11_HOME"
-      - for tool_path in "$JAVA_HOME"/bin/*;
-        do tool=`basename "$tool_path"`;
-        if [ $tool != 'java-rmi.cgi' ];
-        then
-          update-alternatives --list "$tool" | grep -q "$tool_path" \
-            && update-alternatives --set "$tool" "$tool_path";
-        fi;
-      done
-      - mvn clean package
+      # Skip yum update as it may not be available in some CodeBuild environments
+      - echo "Skipping yum update..."
 
   pre_build:
     commands:
@@ -26,10 +15,10 @@ phases:
   build:
     commands:
       - echo "Build started"
-      - scp -i $narsan.pem target/webapp.war ec2-user@13.126.207.243:/home/ec2-user/webapp.war
-      # Replace "/path/to/your/private-key.pem", "your-app.war", "user", "your-linux-machine-ip", and "/path/to/tomcat/webapps/" with your actual values
+      - mvn clean package
 
   post_build:
     commands:
       - echo "Build completed"
-      - echo "Additional post_build commands, if any"
+      - aws ssm get-parameter --name arn:aws:ssm:us-east-1:787367675716:parameter/maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
+      - scp -i private_key.pem target/webapp.war ec2-user@13.126.207.243:/home/ec2-user/webapp.war
