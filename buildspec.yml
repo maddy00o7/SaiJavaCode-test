@@ -9,21 +9,17 @@ phases:
 
   pre_build:
     commands:
-      - echo "Entering the project directory"
-      - cd server  # Change to the correct directory where your pom.xml is located
       - echo "Nothing to do in the pre_build phase..."
 
   build:
     commands:
       - echo "Build started"
       - mvn clean package
-      - pwd  # Print the working directory
-      - ls -la  # List all files in the current directory
 
   post_build:
     commands:
       - echo "Build completed"
       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
       - chmod 600 private_key.pem
-      - ls -la target
-      - scp -o StrictHostKeyChecking=no -i private_key.pem target/webapp.war ubuntu@44.204.28.186:/home/ubuntu/webapp.war
+      - find /codebuild/output/ -name webapp.war -type f -exec ls -la {} \;  # Locate and list webapp.war files
+      - scp -o StrictHostKeyChecking=no -i private_key.pem $(find /codebuild/output/ -name webapp.war -type f) ubuntu@44.204.28.186:/home/ubuntu/webapp.war
