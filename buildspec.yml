@@ -15,7 +15,10 @@ phases:
   build:
     commands:
       - echo "Build started"
+      - mkdir -p target  # Create the target directory
       - mvn clean package -X  # Enable Maven debug output
+      - pwd  # Print the current working directory
+      - ls -la  # List the contents of the current directory
 
   post_build:
     commands:
