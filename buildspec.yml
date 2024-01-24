@@ -15,6 +15,7 @@ phases:
     commands:
       - echo "Build started"
       - mvn clean package
+      - ls -R
 
   post_build:
     commands:
