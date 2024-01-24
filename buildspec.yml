@@ -1,21 +1,35 @@
 version: 0.2
-
+ 
 phases:
   install:
     runtime-versions:
-      java: corretto17
+      java: corretto11
     commands:
-      - yum update -y
-      - yum install -y maven
+      - echo "Installing Java version 11 ..."
+      - export JAVA_HOME="$JAVA_11_HOME"
+      - export JRE_HOME="$JRE_11_HOME"
+      - export JDK_HOME="$JDK_11_HOME"
+      - for tool_path in "$JAVA_HOME"/bin/*;
+        do tool=`basename "$tool_path"`;
+        if [ $tool != 'java-rmi.cgi' ];
+        then
+          update-alternatives --list "$tool" | grep -q "$tool_path" \
+            && update-alternatives --set "$tool" "$tool_path";
+        fi;
+      done
+      - mvn clean package
+
   pre_build:
     commands:
-      - echo Nothing to do in the pre_build phase...
+      - echo "Nothing to do in the pre_build phase..."
+
   build:
     commands:
-      - echo Build started
-      - mvn clean package
+      - echo "Build started"
+      - scp -i $narsan.pem target/webapp.war ec2-user@13.126.207.243:/home/ec2-user/webapp.war
+      # Replace "/path/to/your/private-key.pem", "your-app.war", "user", "your-linux-machine-ip", and "/path/to/tomcat/webapps/" with your actual values
+
   post_build:
     commands:
-      - echo Build completed
-      - scp -i $narsan.pem.pem target/webapp.war  ec2-user@13.126.207.243:/home/ec2-user/webapp.war            #/path/to/tomcat/webapps/
-      # Replace "/path/to/your/private-key.pem", "your-app.war", "user", "your-linux-machine-ip", and "/path/to/tomcat/webapps/" with your actual values
+      - echo "Build completed"
+      - echo "Additional post_build commands, if any"
