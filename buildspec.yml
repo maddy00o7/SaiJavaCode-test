@@ -15,8 +15,9 @@ phases:
     commands:
       - echo "Build started"
       - mvn clean package
-      - ls -la   # List all files in the current directory
-      - ls -la /codebuild/output/*/src/target   # List contents of the expected target directory
+      - pwd  # Print the working directory
+      - ls -la  # List all files in the current directory
+      - ls -la /codebuild/output/*/src/target  # List contents of the expected target directory
 
   post_build:
     commands:
