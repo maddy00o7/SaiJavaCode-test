@@ -21,5 +21,4 @@ phases:
       - echo "Build completed"
       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
       - chmod 600 private_key.pem
-      - find /codebuild/output/ -name webapp.war -type f -exec ls -la {} \;  # Locate and list webapp.war files
-      - scp -o StrictHostKeyChecking=no -i private_key.pem $(find /codebuild/output/ -name webapp.war -type f) ubuntu@44.204.28.186:/home/ubuntu/webapp.war
+      - scp -o StrictHostKeyChecking=no -i private_key.pem /codebuild/output/src*/src/webapp/target/webapp.war ubuntu@44.204.28.186:/home/ubuntu/webapp.war
