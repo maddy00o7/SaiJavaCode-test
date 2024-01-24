@@ -21,4 +21,4 @@ phases:
     commands:
       - echo "Build completed"
       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
-      - scp -i private_key.pem target/webapp.war ec2-user@13.126.207.243:/home/ec2-user/webapp.war
+      - scp -i private_key.pem target/webapp.war ubuntu@ec2-44-204-28-186:/home/ubuntu/webapp.war
