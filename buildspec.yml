@@ -7,15 +7,18 @@ phases:
     commands:
       - yum update -y
       - yum install -y maven
+
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
+
   build:
     commands:
       - echo Build started
       - mvn clean package
+
   post_build:
     commands:
       - echo Build completed
-      - scp -i $narsan.pem.pem target/webapp.war  ec2-user@13.126.207.243:/home/ec2-user/webapp.war            #/path/to/tomcat/webapps/
-      # Replace "/path/to/your/private-key.pem", "your-app.war", "user", "your-linux-machine-ip", and "/path/to/tomcat/webapps/" with your actual values
+      - aws ssm get-parameter --name arn:aws:ssm:us-east-1:787367675716:parameter/maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
+      - scp -i private_key.pem target/webapp.war ec2-user@13.126.207.243:/home/ec2-user/webapp.war
