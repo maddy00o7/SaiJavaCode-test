@@ -22,4 +22,4 @@ phases:
       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
       - chmod 600 private_key.pem
       # Copy the built WAR file to S3 bucket
-      - aws s3 cp /codebuild/output/src*/src/webapp/target/webapp.war s3://tf-test-backend-bucket/path/to/store/webapp.war --sse AES256 --region ap-south-1
+      - aws s3 cp /codebuild/output/src*/src/webapp/target/webapp.war s3://tf-test-backend-bucket/webapp.war --sse AES256 --region ap-south-1
