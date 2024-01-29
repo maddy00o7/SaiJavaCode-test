@@ -21,4 +21,5 @@ phases:
       - echo "Build completed"
       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
       - chmod 600 private_key.pem
-      - scp -o StrictHostKeyChecking=no -i private_key.pem /codebuild/output/src*/src/webapp/target/webapp.war ubuntu@44.204.28.186:/home/ubuntu/webapp.war
+      # Copy the built WAR file to S3 bucket
+      - aws s3 cp /codebuild/output/src*/src/webapp/target/webapp.war s3://tf-test-backend-bucket/path/to/store/webapp.war --sse AES256 --region ap-south-1
