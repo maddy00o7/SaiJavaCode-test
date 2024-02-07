@@ -39,6 +39,9 @@ phases:
 
   post_build:
     commands:
-      # Use AWS CLI to send artifacts to EC2 instance via AWS SSM
-      - aws ssm send-command --document-name "AWS-RunShellScript" --targets "Key=instanceids,Values=i-03b7cf2b2df29bd5d" --parameters commands="aws s3 cp s3://codepipeline-us-east-1-532396540230/cross/SourceArti/ /tmp/ssm --recursive"
-
+      # List objects in the S3 bucket and get the latest one
+      - LATEST_ARTIFACT=$(aws s3 ls s3://codepipeline-us-east-1-532396540230/cross/SourceArti/ --recursive | sort | tail -n 1 | awk '{print $4}')
+      # Copy the latest artifact to the EC2 instance
+      - aws s3 cp "s3://codepipeline-us-east-1-532396540230/$LATEST_ARTIFACT" /tmp/ssm
+      # Create a text file on the EC2 instance
+      - aws ssm send-command --document-name "AWS-RunShellScript" --targets "Key=instanceids,Values=i-03b7cf2b2df29bd5d" --parameters commands="echo 'Hello, this is a text file content' > /tmp/ssm/my_text_file.txt"
