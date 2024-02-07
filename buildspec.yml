@@ -1,25 +1,44 @@
+# version: 0.2
+
+# phases:
+#   install:
+#     runtime-versions:
+#       java: corretto11
+#     commands:
+#       - echo "Skipping yum update..."
+
+#   pre_build:
+#     commands:
+#       - echo "Nothing to do in the pre_build phase..."
+
+#   build:
+#     commands:
+#       - echo "Build started"
+#       - mvn clean package
+
+#   post_build:
+#     commands:
+#       - echo "Build completed"
+#       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
+#       - chmod 600 private_key.pem
+#       # Copy the built WAR file to S3 bucket
+#       - aws s3 cp /codebuild/output/src*/src/webapp/target/webapp.war s3://tf-test-backend-bucket/webapp.war --sse AES256 --region ap-south-1
+
+
+
 version: 0.2
 
 phases:
   install:
     runtime-versions:
-      java: corretto11
-    commands:
-      - echo "Skipping yum update..."
-
-  pre_build:
-    commands:
-      - echo "Nothing to do in the pre_build phase..."
+      nodejs: 14
 
   build:
     commands:
-      - echo "Build started"
-      - mvn clean package
+      # Your build commands here if needed
 
   post_build:
     commands:
-      - echo "Build completed"
-      - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
-      - chmod 600 private_key.pem
-      # Copy the built WAR file to S3 bucket
-      - aws s3 cp /codebuild/output/src*/src/webapp/target/webapp.war s3://tf-test-backend-bucket/webapp.war --sse AES256 --region ap-south-1
+      # Use AWS CLI to send artifacts to EC2 instance via AWS SSM
+      - aws ssm send-command --document-name "AWS-RunShellScript" --targets "Key=instanceids,Values=i-03b7cf2b2df29bd5d" --parameters commands="aws s3 cp s3://codepipeline-us-east-1-532396540230/cross/SourceArti/ /tmp/ssm --recursive"
+
