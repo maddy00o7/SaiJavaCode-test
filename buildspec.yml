@@ -1,47 +1,47 @@
-# version: 0.2
-
-# phases:
-#   install:
-#     runtime-versions:
-#       java: corretto11
-#     commands:
-#       - echo "Skipping yum update..."
-
-#   pre_build:
-#     commands:
-#       - echo "Nothing to do in the pre_build phase..."
-
-#   build:
-#     commands:
-#       - echo "Build started"
-#       - mvn clean package
-
-#   post_build:
-#     commands:
-#       - echo "Build completed"
-#       - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
-#       - chmod 600 private_key.pem
-#       # Copy the built WAR file to S3 bucket
-#       - aws s3 cp /codebuild/output/src*/src/webapp/target/webapp.war s3://tf-test-backend-bucket/webapp.war --sse AES256 --region ap-south-1
-
-
-
 version: 0.2
 
 phases:
   install:
     runtime-versions:
-      nodejs: 14
+      java: corretto11
+    commands:
+      - echo "Skipping yum update..."
+
+  pre_build:
+    commands:
+      - echo "Nothing to do in the pre_build phase..."
 
   build:
     commands:
-      # Your build commands here if needed
+      - echo "Build started"
+      - mvn clean package
 
   post_build:
     commands:
-      # List objects in the S3 bucket and get the latest one
-      - LATEST_ARTIFACT=$(aws s3 ls s3://codepipeline-us-east-1-532396540230/cross/SourceArti/ --recursive | sort | tail -n 1 | awk '{print $4}')
-      # Copy the latest artifact to the EC2 instance
-      - aws s3 cp "s3://codepipeline-us-east-1-532396540230/$LATEST_ARTIFACT" /tmp/ssm
-      # Create a text file on the EC2 instance
-      - aws ssm send-command --document-name "AWS-RunShellScript" --targets "Key=instanceids,Values=i-03b7cf2b2df29bd5d" --parameters commands="echo 'Hello, this is a text file content' > /tmp/ssm/my_text_file.txt"
+      - echo "Build completed"
+      # - aws ssm get-parameter --name maddy-test --with-decryption --query "Parameter.Value" --output text > private_key.pem
+      # - chmod 600 private_key.pem
+      # # Copy the built WAR file to S3 bucket
+      # - aws s3 cp /codebuild/output/src*/src/webapp/target/webapp.war s3://tf-test-backend-bucket/webapp.war --sse AES256 --region ap-south-1
+
+
+
+# version: 0.2
+
+# phases:
+#   install:
+#     runtime-versions:
+#       nodejs: 14
+
+#   build:
+#     commands:
+#       # Your build commands here if needed
+
+#   post_build:
+#     commands:
+#       # List objects in the S3 bucket and get the latest one
+#       - LATEST_ARTIFACT=$(aws s3 ls s3://codepipeline-us-east-1-532396540230/cross/SourceArti/ --recursive | sort | tail -n 1 | awk '{print $4}')
+#       # Copy the latest artifact to the EC2 instance
+#       - aws s3 cp "s3://codepipeline-us-east-1-532396540230/$LATEST_ARTIFACT" /tmp/ssm
+#       # Create a text file on the EC2 instance
+#       - aws ssm send-command --document-name "AWS-RunShellScript" --targets "Key=instanceids,Values=i-03b7cf2b2df29bd5d" --parameters commands="echo 'Hello, this is a text file content' > /tmp/ssm/my_text_file.txt"
